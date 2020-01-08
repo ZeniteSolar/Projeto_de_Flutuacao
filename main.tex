@@ -90,20 +90,21 @@ $$
    \left m_{carga}\\ 
    & & + m_{casco} \\
    & & + m_{piloto} \\ 
-   & & + V_{flutuador}(\rho_{flutuador} -\rho_{água}) + \rho_{água}(V_{interno} - V_{carga} - V_{piloto})
+   & & + V_{flutuador}(\rho_{flutuador} -\rho_{água}) \\ 
+   & & + \rho_{água}(V_{interno} - V_{carga} - V_{piloto})
 \end{eqnarray*}
-$$
+\begin{eqnarray*}
          0 = 
    m_{carga} + m_{casco} + m_{piloto} +V_{flutuador}(\rho_{flutuador} -\rho_{água}) - \rho_{água}(V_{carga} + V_{piloto} + V_{nucleo})
-$$ 
-$$
+\end{eqnarray*} 
+\begin{eqnarray*}
     V_{flutuador}(\rho_{água} - \rho_{flutuador}) = 
     (m_{carga} + m_{casco} + m_{piloto}) - \rho_{água}(V_{carga} + V_{piloto} + V_{nucleo})
-$$  
-$$
+\end{eqnarray*}  
+\begin{eqnarray*}
     \boxed{V_{flutuador} = 
     \frac{(m_{carga} + m_{casco} + m_{piloto}) - \rho_{água}(V_{carga} + V_{piloto} + V_{nucleo})}{(\rho_{água} - \rho_{flutuador})}}
-$$ 
+\end{eqnarray*} 
 
 \section{Projeto}
 \subsection{Massas}
@@ -113,7 +114,7 @@ k_sobrecarga = 0.2
 m_carga = 180
 m_piloto = 70
 m_casco = 35
-m_ar = 0 # considerando 1 ATM, 25C, nivel do mar
+m_ar = 0 # considerando 1 ATM, 25 graus celsius, nivel do mar
 m_total_com_ar = m_casco + m_piloto + m_carga + m_ar
 m_total_com_ar_k = m_total_com_ar * (1 + k_sobrecarga)
 print(f'Massa da Carga: {m_carga} kg')
