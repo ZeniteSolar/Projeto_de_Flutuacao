@@ -5,8 +5,9 @@
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage[colorinlistoftodos]{todonotes}
+\usepackage{pythonhighlight}
 
-\title{Your Paper}
+\title{Projeto de Flutuador - Guarapuvu II}
 \author{You}
 
 \begin{document}
@@ -16,67 +17,196 @@
 Your abstract.
 \end{abstract}
 
-\section{Introduction}
+\section{Modelagem Completa}
 
-Your introduction goes here! Some examples of commonly used commands and features are listed below, to help you get started.
+$$ m_{total com água} = m_{carga} + m_{casco} + m_{piloto} + m_{flutuador} + m_{água} $$  
 
-If you have a question, please use the support box in the bottom right of the screen to get in touch. 
+$$ V_{interno} = V_{carga} + V_{piloto} + V_{flutuador} + V_{agua} $$  
 
-\section{Some \LaTeX{} Examples}
-\label{sec:examples}
+$$ 
+    V_{externo} = 
+    V_{nucleo} + V_{interno} = 
+    V_{nucleo} + V_{carga} + V_{piloto} + V_{flutuador} + V_{água}
+$$  
 
-\subsection{Sections}
+$$ \rho_{total sem água} = \frac{m_{total sem água}}{V_{externo}} $$  
+$$ \rho_{total com água} = \frac{m_{total com água}}{V_{externo}} $$ 
 
-Use section and subsection commands to organize your document. \LaTeX{} handles all the formatting and numbering automatically. Use ref and label commands for cross-references.
+Para flutuar com água dentro, a densidade total com água deve ser maior ou igual ao da água:
 
-\subsection{Comments}
+$$ \rho_{total com água} \leq \rho_{água} $$
 
-Comments can be added to the margins of the document using the \todo{Here's a comment in the margin!} todo command, as shown in the example on the right. You can also add inline comments too:
+Logo, podemos montar nossa equação para a solução do volume do flutuador em função de sua densidade:
 
-\todo[inline, color=green!40]{This is an inline comment.}
+$$
+    \rho_{água} = 
+    \frac{
+    m_{carga} + m_{casco} + m_{piloto} + m_{flutuador} + m_{água}}
+    {
+    V_{carga} + V_{nucleo} + V_{piloto} + V_{flutuador} + V_{água}
+    }
+$$
 
-\subsection{Tables and Figures}
+Considerando:
+$$ m_{flutuador} = \rho_{flutuador}V_{flutuador} $$  
+$$ m_{água} = \rho_{água}V_{água} $$  
+$$ V_{água} = V_{interno} - V_{carga} - V_{piloto} - V_{flutuador} $$
 
-Use the table and tabular commands for basic tables --- see Table~\ref{tab:widgets}, for example. You can upload a figure (JPEG, PNG or PDF) using the files menu. To include it in your document, use the includegraphics command as in the code for Figure~\ref{fig:frog} below.
+Reescrevemos:
+$$
+    \rho_{água} = 
+    \frac{
+        m_{carga} + m_{casco} + m_{piloto} + \rho_{flutuador}V_{flutuador} + \rho_{água}(V_{interno} - V_{carga} - V_{piloto} - V_{flutuador})}
+    {
+        V_{carga} + V_{nucleo} + V_{piloto} + V_{flutuador} + (V_{interno} - V_{carga} - V_{piloto} - V_{flutuador})
+    }
+$$  
 
-% Commands to include a figure:
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth]{frog.jpg}
-\caption{\label{fig:frog}This is a figure caption.}
-\end{figure}
+Simplificando:
+$$
+    \rho_{água} = 
+    \frac{
+        m_{carga} + m_{casco} + m_{piloto} + \rho_{flutuador}V_{flutuador} + \rho_{água}(V_{interno} - V_{carga} - V_{piloto} - V_{flutuador})}
+    {
+        V_{nucleo} + V_{interno}
+    }
+$$ 
+\begin{eqnarray*}
+    \rho_{água} (V_{nucleo} + V_{interno}) = 
+    \left m_{carga} \\
+    & & + m_{casco} \\
+    & & + m_{piloto} \\ 
+    & & + \rho_{flutuador}V_{flutuador} \\ 
+    & & + \rho_{água}(V_{interno} \\ 
+    & & - V_{carga} \\ 
+    & & - V_{piloto} \\ 
+    & &- V_{flutuador})
+\end{eqnarray*}
+    
 
-\begin{table}
-\centering
-\begin{tabular}{l|r}
-Item & Quantity \\\hline
-Widgets & 42 \\
-Gadgets & 13
-\end{tabular}
-\caption{\label{tab:widgets}An example table.}
-\end{table}
+\begin{eqnarray*}
+    \rho_{água} (V_{nucleo} + V_{interno}) = 
+   \left m_{carga}\\ 
+   & & + m_{casco} \\
+   & & + m_{piloto} \\ 
+   & & + V_{flutuador}(\rho_{flutuador} -\rho_{água}) + \rho_{água}(V_{interno} - V_{carga} - V_{piloto})
+\end{eqnarray*}
+$$
+         0 = 
+   m_{carga} + m_{casco} + m_{piloto} +V_{flutuador}(\rho_{flutuador} -\rho_{água}) - \rho_{água}(V_{carga} + V_{piloto} + V_{nucleo})
+$$ 
+$$
+    V_{flutuador}(\rho_{água} - \rho_{flutuador}) = 
+    (m_{carga} + m_{casco} + m_{piloto}) - \rho_{água}(V_{carga} + V_{piloto} + V_{nucleo})
+$$  
+$$
+    \boxed{V_{flutuador} = 
+    \frac{(m_{carga} + m_{casco} + m_{piloto}) - \rho_{água}(V_{carga} + V_{piloto} + V_{nucleo})}{(\rho_{água} - \rho_{flutuador})}}
+$$ 
 
-\subsection{Mathematics}
+\section{Projeto}
+\subsection{Massas}
+Código python que especifica as massas de cada um dos itens a serem considerados para o cálculo:
+\begin{python}
+k_sobrecarga = 0.2
+m_carga = 180
+m_piloto = 70
+m_casco = 35
+m_ar = 0 # considerando 1 ATM, 25C, nivel do mar
+m_total_com_ar = m_casco + m_piloto + m_carga + m_ar
+m_total_com_ar_k = m_total_com_ar * (1 + k_sobrecarga)
+print(f'Massa da Carga: {m_carga} kg')
+print(f'Massa do Piloto: {m_piloto} kg')
+print(f'Massa do casco: {m_casco} kg')
+print(f'Massa do ar: {m_ar} kg')
+print(f'Massa Total: {m_total_com_ar} kg')
+print(f'Sobrecarga Considerada: {100 * k_sobrecarga} %')
+print(f'Massa Total com sobrecarga: {m_total_com_ar_k} kg\n')
+\end{python}
 
-\LaTeX{} is great at typesetting mathematics. Let $X_1, X_2, \ldots, X_n$ be a sequence of independent and identically distributed random variables with $\text{E}[X_i] = \mu$ and $\text{Var}[X_i] = \sigma^2 < \infty$, and let
-$$S_n = \frac{X_1 + X_2 + \cdots + X_n}{n}
-      = \frac{1}{n}\sum_{i}^{n} X_i$$
-denote their mean. Then as $n$ approaches infinity, the random variables $\sqrt{n}(S_n - \mu)$ converge in distribution to a normal $\mathcal{N}(0, \sigma^2)$.
+\subsection{Volumes}
+Código python que especifica os volumes considerados de cada um dos itens necessários para o cálculo:
+\begin{python}
+v_carga = 3 * 0.008065450708
+v_piloto = 0
+v_nucleo_casco = 0.07
+v_externo_casco = 0.9
+v_interno_casco = v_externo_casco - v_nucleo_casco - v_carga
+print(f'Volume da Carga: {v_carga} m³')
+print(f'Volume do Piloto: {v_piloto} m³')
+print(f'Volume do Nucleo do Casco: {v_nucleo_casco} m^2')
+print(f'Volume Externo do Casco: {v_externo_casco} m^2')
+print(f'Volume Interno do Casco: {v_interno_casco} m^2\n')
+\end{python}
 
-\subsection{Lists}
+\subsection{Densidades}
+Código python expecificando as densidades utilizadas nas equações matemáticas:
+\begin{python}
+p_agua = 1030
+p_total_com_ar = m_total_com_ar_k / v_externo_casco
+print(f'Densidade da Agua Salgada 25C: {p_agua} kg/m^2')
+print(f'Densidade do Barco Preenchido de Ar: {p_total_com_ar} kg/m^3\n')
+\end{python}
 
-You can make lists with automatic numbering \dots
+\subsection{Flutuador}
+Código python utilizado para o cálculo do Flutuador:
+\begin{python}
+p_flutuador = 30
+v_flutuador = ((1 + k_sobrecarga) * (m_carga + m_casco + m_piloto) - p_agua * (v_carga + v_piloto + v_nucleo_casco)) / (p_agua - p_flutuador)
+m_flutuador = p_flutuador * v_flutuador
 
-\begin{enumerate}
-\item Like this,
-\item and like this.
-\end{enumerate}
-\dots or bullet points \dots
-\begin{itemize}
-\item Like this,
-\item and like this.
-\end{itemize}
+m_barco = m_carga + m_piloto + m_casco + m_flutuador
+\end{python}
 
-We hope you find write\LaTeX\ useful, and please let us know if you have any feedback using the help menu above.
+\subsection{Resultados Finais}
+Resultados obtidos após os cálculos:
+\begin{python}
+print(f'Massa final do barco com flutuador: {m_barco}kg')
+print(f'Massa do Flutuador: {m_flutuador} kg')
+print(f'Densidade do Material do Flutuador: {p_flutuador}kg/m^3')
+print(f'Volume do Flutuador: {v_flutuador}m^3\n')
+\end{python}
+
+Massa da Carga: 180 kg
+
+Massa do Piloto: 70 kg
+
+Massa do casco: 35 kg
+
+Massa do ar: 0 kg
+
+Massa Total: 285 kg
+
+Sobrecarga Considerada: 20.0 %
+
+Massa Total com sobrecarga: 342.0 kg
+
+
+Volume da Carga: 0.024196352124000002 m³
+
+Volume do Piloto: 0 m³
+
+Volume do Núcleo do Casco: 0.07 m³
+
+Volume Externo do Casco: 0.9 m³
+
+Volume Interno do Casco: 0.8058036478760001 m³
+
+
+Densidade da Água Salgada 25°C: 1030 kg/m³
+
+Densidade do Barco Preenchido de Ar: 380.0 kg/m³
+
+
+Massa final do barco com flutuador: 292.3493327193684kg
+
+Massa do Flutuador: 7.3493327193684 kg
+
+Densidade do Material do Flutuador: 30kg/m^3
+
+Volume do Flutuador: 0.24497775731228m^3
+
+
+
 
 \end{document}
